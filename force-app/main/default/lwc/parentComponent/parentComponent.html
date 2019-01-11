@@ -1,0 +1,30 @@
+<template>
+    <lightning-card>
+        <p>Parent obj.value: <strong>{obj.value}</strong></p>
+        <p>Parent primitive value: <strong>{value}</strong></p>
+        <p>
+            <!-- the template is rerendered if both {obj.value} and {value} are updated at the same time -->
+            <c-child-cmp child-obj={obj} child-value={value} label="Child 1 - all tracked"></c-child-cmp>
+        </p>
+        <p>
+            <!-- the template for this child is never rerendered, though the underlying reactive property is updated -->
+            <c-child-cmp child-obj={obj} label="Child 2 - only obj tracked"></c-child-cmp>
+        </p>
+        <p>
+            <!-- the template for this child is updated when the entire object is updated instead of just a property on the object -->
+            <c-child-cmp child-obj={fullObj} label="Child 3 - full obj replaced"></c-child-cmp>
+        </p>
+        <!-- update the object property, the primitive, and the entire object all at once-->
+        <!-- this updates the view for the parent, Child 1 (which tracks both object and a primtive value), and Child 3 (which tracks the fully replaced object)-->
+        <lightning-input type="text" onchange={handleValUpdate} label="Set All Values"></lightning-input>
+        <!-- update just {obj.value}-->
+        <!-- this updates the view for the parent but not Child 1 or Child 2 which track {obj.value}-->
+        <lightning-input type="text" onchange={handlePropertyUpdate} label="Set Object Property Value"></lightning-input>
+        <!-- update just the {value}-->
+        <!-- this updates the view for the parent and for the primitive property in Child 1 (but not the tracked obj.value)-->
+        <lightning-input type="text" onchange={handlePrimitiveUpdate} label="Set Primitive Value"></lightning-input>
+        <!-- just replace the entire object-->
+        <!-- this updates the view for Child 3, which tracks the replaced object-->
+        <lightning-input type="text" onchange={handleObjectUpdate} label="Replace Whole Object"></lightning-input>
+    </lightning-card>
+</template>
